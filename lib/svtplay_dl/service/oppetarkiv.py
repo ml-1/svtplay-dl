@@ -11,7 +11,7 @@ from svtplay_dl.log import log
 from svtplay_dl.fetcher.hds import hdsparse
 from svtplay_dl.fetcher.hls import hlsparse
 from svtplay_dl.fetcher.dash import dashparse
-from svtplay_dl.utils import ensure_unicode, filenamify, is_py2
+from svtplay_dl.utils import ensure_unicode, filenamify
 from svtplay_dl.subtitle import subtitle
 from svtplay_dl.utils.urllib import urlparse, parse_qs
 
@@ -163,10 +163,7 @@ class OppetArkiv(Service, OpenGraphThumbMixin):
                     name = name[:name.find(".")]
                 name = filenamify(name.replace(" - ", "."))
                 other = filenamify(data["episodeTitle"])
-            if is_py2:
-                id = hashlib.sha256(data["programVersionId"]).hexdigest()[:7]
-            else:
-                id = hashlib.sha256(data["programVersionId"].encode("utf-8")).hexdigest()[:7]
+            id = hashlib.sha256(data["programVersionId"].encode("utf-8")).hexdigest()[:7]
 
         if name == other:
             other = None
