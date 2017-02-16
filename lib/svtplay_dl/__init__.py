@@ -7,6 +7,7 @@ import os
 import logging
 import copy
 from optparse import OptionParser
+import configparser
 
 from svtplay_dl.error import UIException
 from svtplay_dl.log import log
@@ -453,6 +454,8 @@ def main():
 
     urls = args
 
+    options = readconfig(options)
+
     try:
         if len(urls) == 1:
             get_media(urls[0], options)
@@ -493,4 +496,53 @@ def mergeParserOption(options, parser):
     options.get_raw_subtitles = parser.get_raw_subtitles
     options.convert_subtitle_colors = parser.convert_subtitle_colors
     options.include_clips = parser.include_clips
+    return options
+
+
+def readconfig(options):
+    config = configparser.ConfigParser()
+    config.read("svtplay.ini")
+    if "silent" in config["general"]:
+        options.silent = config.getboolean("general", "silent")
+    if "force" in config["general"]:
+        options.force = config.getboolean("general", "force")
+    if "output" in config["general"]:
+        options.output = config["general"]["output"]
+    if "subtitle" in config["general"]:
+        options.subtitle = config.getboolean("general", "subtitle")
+    if "merge_subtitle" in config["general"]:
+        options.merge_subtitle = config.getboolean("general", "merge_subtitle")
+    if "silent_semi" in config["general"]:
+        options.silent_semi = config.getboolean("general", "silent_semi")
+    if "thumbnail" in config["general"]:
+        options.thumbnail = config.getboolean("general", "thumbnail")
+    if "all_episodes" in config["general"]:
+        options.all_episodes = config.getboolean("general", "all_episodes")
+    if "all_last" in config["general"]:
+        options.all_last = config["general"]["all_last"]
+    if "force_subtitle" in config["general"]:
+        options.require_subtitle = config.getboolean("general", "force_subtitle")
+    if "preferred" in config["general"]:
+        options.preferred = config["general"]["preferred"]
+    if "verbose" in config["general"]:
+        options.verbose = config.getboolean("general", "verbose")
+    if "exclude" in config["general"]:
+        options.exclude = config["general"]["exclude"]
+    if "ssl_verify" in config["general"]:
+        options.ssl_verify = config.getboolean("general", "ssl_verify")
+    if "http_headers" in config["general"]:
+        options.http_headers = config["general"]["http_headers"]
+    if "stream_prio" in config["general"]:
+        options.stream_prio = config["general"]["stream_prio"]
+    if "remux" in config["general"]:
+        options.remux = config.getboolean("general", "remux")
+    if "get_all_subtitles" in config["general"]:
+        options.get_all_subtitles = config.getboolean("general", "get_all_subtitles")
+    if "get_raw_subtitles" in config["general"]:
+        options.get_raw_subtitles = config.getboolean("general", "get_raw_subtitles")
+    if "convert_subtitle_colors" in config["general"]:
+        options.convert_subtitle_colors = config.getboolean("general", "convert_subtitle_colors")
+    if "include_clips" in config["general"]:
+        options.include_clips = config.getboolean("general", "include_clips")
+
     return options
